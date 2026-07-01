@@ -1,8 +1,10 @@
-import { ClerkProvider } from '@clerk/tanstack-react-start'
+import { ClerkProvider, useUser } from "@clerk/tanstack-react-start";
+import { PostHogProvider, usePostHog } from "@posthog/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { useEffect } from "react";
 import Crosshair from "#/components/Crosshair";
 import Navbar from "#/components/Navbar";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
@@ -40,6 +42,24 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   shellComponent: RootDocument,
 });
 
+function PostHogIdentify() {
+  const posthog = usePostHog()
+  const { user, isSignedIn } = useUser()
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      posthog.identify(user.id, {
+        email: user.primaryEmailAddress?.emailAddress,
+        name: user.fullName,
+      })
+    } else if (!isSignedIn) {
+      posthog.reset()
+    }
+  }, [isSignedIn, user, posthog])
+
+  return null
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressContentEditableWarning className="dark">
@@ -48,21 +68,34 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
 
       <body>
-        <ClerkProvider>
-          <div id="root-layout">
-            <header>
-              <div className="frame">
-                <Navbar />
-                <Crosshair />
-                <Crosshair />
-              </div>
-            </header>
+        <PostHogProvider
+          apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN ?? ""}
+          options={{
+            api_host: '/ingest',
+            ui_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://eu.posthog.com',
+            defaults: '2025-05-24',
+            capture_exceptions: true,
+            debug: import.meta.env.DEV,
+          }}
+        >
+          <ClerkProvider>
+            {/* Sync Clerk user identity into PostHog on auth state changes */}
+            <PostHogIdentify />
+            <div id="root-layout">
+              <header>
+                <div className="frame">
+                  <Navbar />
+                  <Crosshair />
+                  <Crosshair />
+                </div>
+              </header>
 
-            <main>
-              <div className="frame">{children}</div>
-            </main>
-          </div>
-        </ClerkProvider>
+              <main>
+                <div className="frame">{children}</div>
+              </main>
+            </div>
+          </ClerkProvider>
+        </PostHogProvider>
 
           <TanStackDevtools
             config={{

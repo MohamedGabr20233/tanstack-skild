@@ -1,6 +1,7 @@
-import { useCopyToClipBoard } from "#/lib/utils";
+import { usePostHog } from "@posthog/react";
 import { Link } from "@tanstack/react-router";
 import { ArrowBigUp, ArrowUpRight, Bookmark, Check, Clipboard, ClipboardX, MessageSquare } from "lucide-react";
+import { useCopyToClipBoard } from "#/lib/utils";
 
 interface Props {
   skill: SkillRecord;
@@ -8,9 +9,29 @@ interface Props {
 
 const SkillCard = ({ skill }: Props) => {
   //* ======== destruct the skill variables ========
-  const { authorEmail, category, createdAt, description, installCommand, tags, title } = skill;
+  const { authorEmail, category, createdAt, description, id: skillId, installCommand, slug, tags, title } = skill;
 
   const { state: copyState, copy: copyFunction } = useCopyToClipBoard();
+  const posthog = usePostHog();
+
+  const handleCopy = () => {
+    copyFunction(installCommand as string);
+    posthog.capture("skill_install_command_copied", {
+      skill_id: skillId,
+      skill_title: title,
+      skill_slug: slug,
+      install_command: installCommand,
+    });
+  };
+
+  const handleOpen = () => {
+    posthog.capture("skill_opened", {
+      skill_id: skillId,
+      skill_title: title,
+      skill_slug: slug,
+      category,
+    });
+  };
 
   return (
     <article className="skill-card">
@@ -60,7 +81,7 @@ const SkillCard = ({ skill }: Props) => {
           </div>
 
           <button
-            onClick={() => copyFunction(installCommand as string)}
+            onClick={handleCopy}
             className={`copy focus-within:ring-0 outline-0 cursor-pointer transition-all fade-in
             ${copyState === "success" ? "text-green-600" : copyState === "failed" ? "text-red-700" : ""}
             `}
@@ -83,7 +104,7 @@ const SkillCard = ({ skill }: Props) => {
           </div>
 
           <div className="actions">
-            <Link to="/skills" className="open" title={`Open ${title}`}>
+            <Link to="/skills" className="open" title={`Open ${title}`} onClick={handleOpen}>
               <span>Open</span>
               <ArrowUpRight size={14} />
             </Link>
