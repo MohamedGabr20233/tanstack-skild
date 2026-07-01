@@ -1,16 +1,12 @@
-import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { ClerkProvider } from '@clerk/tanstack-react-start'
 import { TanStackDevtools } from "@tanstack/react-devtools";
-
-import ClerkProvider from "../integrations/clerk/provider";
-
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-
-import appCss from "../styles.css?url";
-
 import type { QueryClient } from "@tanstack/react-query";
-import Navbar from "#/components/Navbar";
+import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import Crosshair from "#/components/Crosshair";
+import Navbar from "#/components/Navbar";
+import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
+import appCss from "../styles.css?url";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -66,6 +62,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               <div className="frame">{children}</div>
             </main>
           </div>
+        </ClerkProvider>
 
           <TanStackDevtools
             config={{
@@ -79,7 +76,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               TanStackQueryDevtools,
             ]}
           />
-        </ClerkProvider>
         <Scripts />
       </body>
     </html>
