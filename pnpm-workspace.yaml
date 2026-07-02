@@ -1,2 +1,3 @@
 allowBuilds:
   '@clerk/shared': false
+  core-js: false
