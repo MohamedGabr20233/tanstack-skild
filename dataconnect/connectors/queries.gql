@@ -1,0 +1,25 @@
+query GetSkills($searchTerm : String ="" , $limit: Int = 10) @auth 
+(level:PUBLIC insecureReason : "Skills should be visible to everyone") {
+    skills(
+        # get all the  where
+        where: {
+            # where 
+            _or : [
+                # the title contains our search param
+                {title : {contains : $searchTerm}}
+                # the description contains our search param
+                {description : {contains : $searchTerm}}
+            ]
+        },
+        orderBy: [{
+            createdAt: DESC
+        }],
+        limit: $limit
+    )
+    # the return resource
+    {
+        id title description tags createdAt installCommand
+        # the joined data using relation id from author === clerkId from our user table
+        author {username imageUrl clerkId email}
+    }
+}

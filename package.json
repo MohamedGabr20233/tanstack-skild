@@ -13,7 +13,8 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check"
+    "check": "biome check",
+    "firebase-deploy": "npx -y firebase-tools@latest deploy --only dataconnect"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.3",

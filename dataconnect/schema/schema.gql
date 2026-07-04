@@ -1,0 +1,43 @@
+#? learn how to do
+#* first define the entity
+# type ModalName @table(#*primaryKey: "id")
+# {
+#   id: String! (! means required) @unique #* => for clerkId case
+#   id: UUID! @default(expr: "uuidV4()") @unique #* => for normal id
+#   email: String!
+#   tags: [String!]! #* => for array of string and required cannot be null
+
+#   #? Relationship
+#   author: User!
+
+# }
+# 1. User Table
+type User @table(key: "clerkId") {
+  clerkId: String! @unique
+  email: String!
+  username: String
+  imageUrl: String
+}
+
+# 2 The Skill Table
+type Skill @table {
+  id: UUID! @default(expr: "uuidV4()")
+
+  #? Relationship
+  author: User!
+
+  #? Fields
+
+  #* Content
+  title: String!
+  description: String!
+  tags: [String!]!
+
+  #* Technical
+  installCommand: String!
+  promptConfig: String!
+  usageExample: String!
+
+  #* Metadata
+  createdAt: Timestamp! @default(expr: "request.time")
+}

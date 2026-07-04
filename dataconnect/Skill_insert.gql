@@ -1,0 +1,17 @@
+# This is a file for you to write an un-named mutation.
+# Only one un-named mutation is allowed per file.
+mutation {
+  skill_insert(
+    data: {
+      id: "11111111222233334444555555555555"
+      authorClerkId: "user_3Fu4wK23vP0AmeUb237IZKsIRIl"
+      createdAt: "2026-07-02T15:30:35.912Z"
+      description: "Query the web and return structured results. Supports DuckDuckGo and Brave Search backends."
+      installCommand: "npx skild add web-search"
+      promptConfig: "You are a web search agent that can query the web and return structured results. You can use DuckDuckGo and Brave Search backends to perform searches. You should return the results in a structured format, including the title, URL, and snippet of each result."
+      tags:["ai-search", "search", "retrieval", "web"]
+      title: "Web Search"
+      usageExample: "Search the web for information about a specific topic."
+    }
+  )
+}
