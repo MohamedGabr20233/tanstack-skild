@@ -5,11 +5,11 @@ import { useCopyToClipBoard } from "#/lib/utils";
 import type { GetSkillsData } from "#/dataconnect-generated";
 
 
-type SkillCardProps = GetSkillsData['skills'][number];
+type SkillCardProps = { skill: GetSkillsData['skills'][number] };
 
 const SkillCard = ({ skill }: SkillCardProps) => {
   //* ======== destruct the skill variables ========
-  const { createdAt, description, id: skillId, author, installCommand, slug, tags, title } = skill;
+  const { createdAt, description, id: skillId, author, installCommand, tags, title } = skill;
   const category = tags[0] || "General";
 
   const { state: copyState, copy: copyFunction } = useCopyToClipBoard();
@@ -20,7 +20,6 @@ const SkillCard = ({ skill }: SkillCardProps) => {
     posthog.capture("skill_install_command_copied", {
       skill_id: skillId,
       skill_title: title,
-      skill_slug: slug,
       install_command: installCommand,
     });
   };
@@ -29,7 +28,6 @@ const SkillCard = ({ skill }: SkillCardProps) => {
     posthog.capture("skill_opened", {
       skill_id: skillId,
       skill_title: title,
-      skill_slug: slug,
       category,
     });
   };

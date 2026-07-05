@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({ component: HomePage, loader: () => g
 
 
 function HomePage() {
-  // const posthog = usePostHog();
+  const posthog = usePostHog();
 
   const skills = Route.useLoaderData();
 
@@ -45,11 +45,11 @@ function HomePage() {
         </div>
 
         <div className="actions">
-          <Link to="/skills" className="btn-primary" onClick={() => posthog.capture("browse_registry_clicked")}>
+          <Link to="/" className="btn-primary" onClick={() => posthog.capture("browse_registry_clicked")}>
             <Terminal size={18} />
             <span>Browse Registry</span>
           </Link>
-          <Link to="/skills/new" className="btn-secondary" onClick={() => posthog.capture("publish_skill_clicked")}>
+          <Link to="/" className="btn-secondary" onClick={() => posthog.capture("publish_skill_clicked")}>
             <span>publish skill</span>
           </Link>
         </div>
