@@ -19,3 +19,4 @@ dataconnect/.dataconnect
 .dataconnect/connectors
 *.log
 .firebase/
+src/dataconnect-generated/
