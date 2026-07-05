@@ -1,25 +1,32 @@
-query GetSkills($searchTerm : String ="" , $limit: Int = 10) @auth 
-(level:PUBLIC insecureReason : "Skills should be visible to everyone") {
+# query QueryName ($VariableName : VariableType = DefaultVariableValue) #* add auth level @auth({ level : PUBLIC , insecureReason : "Reason for public access" }) *#
+# * {
+# tableName(
+#  where{
+# * {fieldName : {contains : $VariableName}} *#
+# } ,
+# * orderBy:{fieldName:DESC} *#
+# * limit:$VariableName
+# )
+# ? the resource of response
+# {
+#*  resourceField1  resourceField2  resourceField3
+#* joinTableKey   {joinTableField1  joinTableField2  joinTableField3}
+# }
+#* }
+query GetSkills($searchTerm: String = "" , $limit: Int = 10) @auth(level: PUBLIC, insecureReason: "Reason for public access"){
     skills(
-        # get all the  where
-        where: {
-            # where 
-            _or : [
-                # the title contains our search param
-                {title : {contains : $searchTerm}}
-                # the description contains our search param
+        where:{
+            _or:[
+                {title : {contains : $searchTerm}},
                 {description : {contains : $searchTerm}}
             ]
-        },
-        orderBy: [{
-            createdAt: DESC
-        }],
-        limit: $limit
-    )
-    # the return resource
-    {
-        id title description tags createdAt installCommand
-        # the joined data using relation id from author === clerkId from our user table
+        }
+        ,orderBy:{createdAt:DESC}
+        ,limit:$limit
+        
+    ){
+        id  title  description  tags  createdAt installCommand
         author {username imageUrl clerkId email}
     }
 }
+    

@@ -2,14 +2,15 @@ import { usePostHog } from "@posthog/react";
 import { Link } from "@tanstack/react-router";
 import { ArrowBigUp, ArrowUpRight, Bookmark, Check, Clipboard, ClipboardX, MessageSquare } from "lucide-react";
 import { useCopyToClipBoard } from "#/lib/utils";
+import type { GetSkillsData } from "#/dataconnect-generated";
 
-interface Props {
-  skill: SkillRecord;
-}
 
-const SkillCard = ({ skill }: Props) => {
+type SkillCardProps = GetSkillsData['skills'][number];
+
+const SkillCard = ({ skill }: SkillCardProps) => {
   //* ======== destruct the skill variables ========
-  const { authorEmail, category, createdAt, description, id: skillId, installCommand, slug, tags, title } = skill;
+  const { createdAt, description, id: skillId, author, installCommand, slug, tags, title } = skill;
+  const category = tags[0] || "General";
 
   const { state: copyState, copy: copyFunction } = useCopyToClipBoard();
   const posthog = usePostHog();
@@ -51,9 +52,9 @@ const SkillCard = ({ skill }: Props) => {
       <div className="body">
         <div className="meta">
           <div className="author">
-            <img src="/logo512.png" alt="author avatar" className="avatar" />
+            <img src={author.imageUrl || "/logo512.png"} alt={`${author.username}'s avatar`} className="avatar" />
             <div className="author-copy">
-              <p>Adrian</p>
+              <p>{author.username}</p>
               <p>{createdAt ? new Date(createdAt as string).toLocaleDateString() : "Unknown"}</p>
             </div>
           </div>
@@ -99,7 +100,7 @@ const SkillCard = ({ skill }: Props) => {
 
             <div className="comments">
               <MessageSquare size={14} />
-              <span>{authorEmail ? 1 : 0}</span>
+              <span>{author.email ? 1 : 0}</span>
             </div>
           </div>
 

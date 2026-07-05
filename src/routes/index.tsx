@@ -2,11 +2,35 @@ import { usePostHog } from "@posthog/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Terminal } from "lucide-react";
 import SkillCard from "../components/SkillCard";
-import { dummySkills } from "../lib/dummy-skills";
+import { createServerFn } from "@tanstack/react-start";
+import { dataConnect } from "#/lib/firebase";
+import { getSkills } from "#/dataconnect-generated";
 
-export const Route = createFileRoute("/")({ component: HomePage });
+const getSkillsFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    try {
+      // * {destructedVariable} = await QueryFn(DataConnector , {param1 : value1 , param2 : value2})"})
+      const { data } = await getSkills(dataConnect, {
+        searchTerm: "",
+        limit: 10,
+      })
+
+      console.log(data)
+      return data.skills
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  })
+export const Route = createFileRoute("/")({ component: HomePage, loader: () => getSkillsFn() });
+
+
+
 function HomePage() {
-  const posthog = usePostHog();
+  // const posthog = usePostHog();
+
+  const skills = Route.useLoaderData();
+
 
   return (
     <div id="home">
@@ -29,7 +53,7 @@ function HomePage() {
             <span>publish skill</span>
           </Link>
         </div>
-      </section>
+      </section >
 
       <section className="latest">
         <div className="space-y-2">
@@ -41,9 +65,9 @@ function HomePage() {
 
         {/* the carts */}
         <div>
-          {dummySkills.length > 0 ? (
+          {skills.length > 0 ? (
             <div className="skills-grid">
-              {dummySkills.map((skill: SkillRecord) => (
+              {skills.map((skill) => (
                 <SkillCard skill={skill} key={skill.id} />
               ))}
             </div>
@@ -52,6 +76,6 @@ function HomePage() {
           )}
         </div>
       </section>
-    </div>
+    </div >
   );
 }
