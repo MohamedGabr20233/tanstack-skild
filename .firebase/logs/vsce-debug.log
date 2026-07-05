@@ -661,3 +661,50 @@ I0705 01:25:53.156868   28008 load.go:109] Finished reloading
  {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0705 01:25:53.167706   28008 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
 [debug] [2026-07-04T22:25:53.344Z] I0705 01:25:53.343593   28008 engine.go:209] [projects/emulator/locations/emulator/services/skild-f53ec-service 3bf8] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
  {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0705 01:25:53.343593   28008 engine.go:209] [projects/emulator/locations/emulator/services/skild-f53ec-service 3bf8] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[info] [Firebase Plugin] Stopping SQL Connect toolkit
+[debug] [2026-07-05T22:14:16.593Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2026-07-05T22:14:35.420Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-07-05T22:14:35.423Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-07-05T22:14:35.423Z] > authorizing via signed-in user (mohamedgbr20233@gmail.com)
+[debug] [2026-07-05T22:14:35.427Z] Checked if tokens are valid: false, expires at: 1783207550932
+[debug] [2026-07-05T22:14:35.427Z] Checked if tokens are valid: false, expires at: 1783207550932
+[debug] [2026-07-05T22:14:35.427Z] > refreshing access token with scopes: []
+[debug] [2026-07-05T22:14:35.429Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-07-05T22:14:35.429Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-07-05T22:14:35.449Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.11) on port 50001
+[debug] [2026-07-05T22:14:36.572Z] I0706 01:14:36.565252   25376 control.go:100] [projects/emulator/locations/emulator/services/skild-f53ec-service 8d0a] UpdateResources(): done
+Main schema: sources: schema\schema.gql [908B] 
+Connector "example": sources: connectors\queries.gql [834B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0706 01:14:36.565252   25376 control.go:100] [projects/emulator/locations/emulator/services/skild-f53ec-service 8d0a] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [908B] \nConnector \"example\": sources: connectors\\queries.gql [834B] \n"}}
+[debug] [2026-07-05T22:14:36.573Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-07-05T22:14:36.573Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-07-05T22:14:36.573Z] Starting SQL Connect Emulator with command {"binary":"C:\\Users\\Lolog\\.cache\\firebase\\emulators\\dataconnect-emulator-3.4.11.exe","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=e:\\CODES\\Projects\\My-Projects\\skild\\dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"C:\\\\Users\\\\Lolog\\\\.cache\\\\firebase\\\\emulators\\\\dataconnect-emulator-3.4.11.exe\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=e:\\\\CODES\\\\Projects\\\\My-Projects\\\\skild\\\\dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to \u001b[1mdataconnect-debug.log\u001b[22m"}}
+[debug] [2026-07-05T22:14:36.675Z] I0706 01:14:36.601674   24312 load.go:31] Reloading schema and connectors...
+I0706 01:14:36.610486   24312 control.go:100] [projects/emulator/locations/emulator/services/skild-f53ec-service b063] UpdateResources(): done
+Main schema: sources: schema\schema.gql [908B] 
+Connector "example": sources: connectors\queries.gql [834B] 
+I0706 01:14:36.618062   24312 codegen.go:101] [connector "example" javascriptSdk] Generating sources into "e:\\CODES\\Projects\\My-Projects\\skild\\src\\dataconnect-generated"
+I0706 01:14:36.624676   24312 collector.go:107] schema extensions wrote into "e:\\CODES\\Projects\\My-Projects\\skild\\dataconnect\\.dataconnect\\schema"
+Generated sources: main\implicit.gql [266B] main\input.gql [16145B] main\relation.gql [6578B] main\query.gql [2404B] main\mutation.gql [6444B] prelude.gql [84995B] 
+I0706 01:14:36.628016   24312 collector.go:107] connector "example" javascriptSdk wrote into "e:\\CODES\\Projects\\My-Projects\\skild\\src\\dataconnect-generated"
+Generated sources: react\index.cjs.js [605B] .guides/setup.md [1682B] .guides/config.json [236B] index.cjs.js [1099B] package.json [853B] react\index.d.ts [690B] react\package.json [460B] react\esm\index.esm.js [581B] react\README.md [12918B] .guides/usage.md [1571B] README.md [8682B] react\esm\package.json [17B] index.d.ts [1661B] esm\index.esm.js [969B] esm\package.json [17B] 
+I0706 01:14:36.666624   24312 installsdk.go:86] Running command: C:\Users\Lolog\AppData\Roaming\npm\pnpm.cmd link src\dataconnect-generated
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0706 01:14:36.601674   24312 load.go:31] Reloading schema and connectors...\nI0706 01:14:36.610486   24312 control.go:100] [projects/emulator/locations/emulator/services/skild-f53ec-service b063] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [908B] \nConnector \"example\": sources: connectors\\queries.gql [834B] \nI0706 01:14:36.618062   24312 codegen.go:101] [connector \"example\" javascriptSdk] Generating sources into \"e:\\\\CODES\\\\Projects\\\\My-Projects\\\\skild\\\\src\\\\dataconnect-generated\"\nI0706 01:14:36.624676   24312 collector.go:107] schema extensions wrote into \"e:\\\\CODES\\\\Projects\\\\My-Projects\\\\skild\\\\dataconnect\\\\.dataconnect\\\\schema\"\nGenerated sources: main\\implicit.gql [266B] main\\input.gql [16145B] main\\relation.gql [6578B] main\\query.gql [2404B] main\\mutation.gql [6444B] prelude.gql [84995B] \nI0706 01:14:36.628016   24312 collector.go:107] connector \"example\" javascriptSdk wrote into \"e:\\\\CODES\\\\Projects\\\\My-Projects\\\\skild\\\\src\\\\dataconnect-generated\"\nGenerated sources: react\\index.cjs.js [605B] .guides/setup.md [1682B] .guides/config.json [236B] index.cjs.js [1099B] package.json [853B] react\\index.d.ts [690B] react\\package.json [460B] react\\esm\\index.esm.js [581B] react\\README.md [12918B] .guides/usage.md [1571B] README.md [8682B] react\\esm\\package.json [17B] index.d.ts [1661B] esm\\index.esm.js [969B] esm\\package.json [17B] \nI0706 01:14:36.666624   24312 installsdk.go:86] Running command: C:\\Users\\Lolog\\AppData\\Roaming\\npm\\pnpm.cmd link src\\dataconnect-generated\n"}}
+[debug] [2026-07-05T22:14:37.152Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-07-05T22:14:37.153Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-07-05T22:14:37.198Z] [Firebase Plugin] User found:  mohamedgbr20233@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-07-05T22:14:37.200Z] Checked if tokens are valid: true, expires at: 1783293276153
+[debug] [2026-07-05T22:14:37.200Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-07-05T22:14:38.134Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-07-05T22:14:38.135Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2026-07-05T22:14:39.188Z] E0706 01:14:39.188478   24312 installsdk.go:88] Failed to install package: exit status 1
+I0706 01:14:39.188478   24312 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0706 01:14:39.188478   24312 installsdk.go:88] Failed to install package: exit status 1\nI0706 01:14:39.188478   24312 load.go:109] Finished reloading\n"}}
+[debug] [2026-07-05T22:14:39.197Z] I0706 01:14:39.197242   24312 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0706 01:14:39.197242   24312 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-07-05T22:14:39.386Z] I0706 01:14:39.386791   24312 engine.go:209] [projects/emulator/locations/emulator/services/skild-f53ec-service b063] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0706 01:14:39.386791   24312 engine.go:209] [projects/emulator/locations/emulator/services/skild-f53ec-service b063] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
