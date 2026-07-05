@@ -17,3 +17,5 @@ todos.json
 .firebase
 dataconnect/.dataconnect
 .dataconnect/connectors
+*.log
+.firebase/
