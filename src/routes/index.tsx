@@ -15,7 +15,6 @@ const getSkillsFn = createServerFn({ method: "GET" })
         limit: 10,
       })
 
-      console.log(data)
       return data.skills
     } catch (e) {
       console.log(e)
