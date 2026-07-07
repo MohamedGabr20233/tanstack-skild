@@ -1,5 +1,5 @@
 import {getDataConnect} from '@firebase/data-connect'
-import { connectorConfig } from '#/dataconnect-generated';
+import { connectorConfig } from '../../dataconnect/connectors/dataconnect-generated';
 import { getApps, initializeApp, getApp } from 'firebase/app';
 
 

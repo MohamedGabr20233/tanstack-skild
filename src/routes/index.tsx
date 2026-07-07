@@ -4,7 +4,7 @@ import { Terminal } from "lucide-react";
 import SkillCard from "../components/SkillCard";
 import { createServerFn } from "@tanstack/react-start";
 import { dataConnect } from "#/lib/firebase";
-import { getSkills } from "#/dataconnect-generated";
+import { getSkills } from "../../dataconnect/connectors/dataconnect-generated";
 
 const getSkillsFn = createServerFn({ method: "GET" })
   .handler(async () => {

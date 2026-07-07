@@ -2,7 +2,7 @@ import { usePostHog } from "@posthog/react";
 import { Link } from "@tanstack/react-router";
 import { ArrowBigUp, ArrowUpRight, Bookmark, Check, Clipboard, ClipboardX, MessageSquare } from "lucide-react";
 import { useCopyToClipBoard } from "#/lib/utils";
-import type { GetSkillsData } from "#/dataconnect-generated";
+import type { GetSkillsData } from "../../dataconnect/connectors/dataconnect-generated";
 
 
 type SkillCardProps = { skill: GetSkillsData['skills'][number] };
