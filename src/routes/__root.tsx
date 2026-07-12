@@ -1,4 +1,3 @@
-import { ClerkProvider, useUser } from "@clerk/tanstack-react-start";
 import { PostHogProvider, usePostHog } from "@posthog/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
@@ -10,6 +9,7 @@ import Navbar from "#/components/Navbar";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 import { Toaster } from "sonner";
+import { getCurrentUser } from "../../server/auth.api";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -41,12 +41,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+
+  beforeLoad: async () => {
+    const data = await getCurrentUser()
+    return data
+  }
 });
 
 function PostHogIdentify() {
   const posthog = usePostHog()
-  const { user, isSignedIn } = useUser()
 
+  { user, isSignedIn } =
   useEffect(() => {
     if (isSignedIn && user) {
       posthog.identify(user.id, {
@@ -79,23 +84,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             debug: import.meta.env.DEV,
           }}
         >
-          <ClerkProvider>
-            {/* Sync Clerk user identity into PostHog on auth state changes */}
-            <PostHogIdentify />
-            <div id="root-layout">
-              <header>
-                <div className="frame">
-                  <Navbar />
-                  <Crosshair />
-                  <Crosshair />
-                </div>
-              </header>
+          {/* Sync Clerk user identity into PostHog on auth state changes */}
+          <PostHogIdentify />
+          <div id="root-layout">
+            <header>
+              <div className="frame">
+                <Navbar />
+                <Crosshair />
+                <Crosshair />
+              </div>
+            </header>
 
-              <main>
-                <div className="frame">{children}</div>
-              </main>
-            </div>
-          </ClerkProvider>
+            <main>
+              <div className="frame">{children}</div>
+            </main>
+          </div>
         </PostHogProvider>
 
         <TanStackDevtools
