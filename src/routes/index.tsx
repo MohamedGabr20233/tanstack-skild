@@ -3,32 +3,41 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Terminal } from "lucide-react";
 import SkillCard from "../components/SkillCard";
 import { createServerFn } from "@tanstack/react-start";
-import { dataConnect } from "#/lib/firebase";
-import { getSkills } from "#/dataconnect-generated";
+import { getCurrentProfile } from "../../server/auth.api";
 
 const getSkillsFn = createServerFn({ method: "GET" })
   .handler(async () => {
     try {
       // * {destructedVariable} = await QueryFn(DataConnector , {param1 : value1 , param2 : value2})"})
-      const { data } = await getSkills(dataConnect, {
-        searchTerm: "",
-        limit: 10,
-      })
+      // const { data } = await getSkills(dataConnect, {
+      //   searchTerm: "",
+      //   limit: 10,
+      // })
 
-      return data.skills
+      return true
     } catch (e) {
       console.log(e)
       return []
     }
   })
-export const Route = createFileRoute("/")({ component: HomePage, loader: () => getSkillsFn() });
+export const Route = createFileRoute("/")({
+  component: HomePage,
+  loader: async () => {
+    // save promise
+
+    const saveGetSkills = getSkillsFn().catch(false)
+    const resolve = Promise.all([getCurrentProfile(), saveGetSkills])
+
+    return resolve
+  }
+});
 
 
 
 function HomePage() {
   const posthog = usePostHog();
 
-  const skills = Route.useLoaderData();
+  // const skills = Route.useLoaderData();
 
 
   return (
@@ -63,7 +72,7 @@ function HomePage() {
         </div>
 
         {/* the carts */}
-        <div>
+        {/* <div>
           {skills.length > 0 ? (
             <div className="skills-grid">
               {skills.map((skill) => (
@@ -73,7 +82,7 @@ function HomePage() {
           ) : (
             <p>No skills have been created yet</p>
           )}
-        </div>
+        </div> */}
       </section>
     </div >
   );

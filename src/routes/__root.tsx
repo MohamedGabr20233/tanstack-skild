@@ -4,12 +4,15 @@ import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
+import { supabase } from "#/utils/supabase";
 import Crosshair from "#/components/Crosshair";
 import Navbar from "#/components/Navbar";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 import { Toaster } from "sonner";
-import { getCurrentUser } from "../../server/auth.api";
+import { getCurrentProfile, getCurrentUser } from "../../server/auth.api";
+import type { profileSchema } from "../../type";
+
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -42,31 +45,54 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   }),
   shellComponent: RootDocument,
 
-  beforeLoad: async () => {
-    const data = await getCurrentUser()
-    return data
+  loader: async () => {
+    const data = await getCurrentProfile()
+
+    return data as profileSchema | null
   }
 });
 
 function PostHogIdentify() {
   const posthog = usePostHog()
 
-  { user, isSignedIn } =
   useEffect(() => {
-    if (isSignedIn && user) {
-      posthog.identify(user.id, {
-        email: user.primaryEmailAddress?.emailAddress,
-        name: user.fullName,
-      })
-    } else if (!isSignedIn) {
-      posthog.reset()
+    // identifySupabaseUser: push current auth user identity into PostHog
+    const identifySupabaseUser = (authenticatedUser: import("@supabase/supabase-js").User | null) => {
+      if (authenticatedUser) {
+        posthog.identify(authenticatedUser.id, {
+          email: authenticatedUser.email,
+          name:
+            authenticatedUser.user_metadata?.full_name ??
+            authenticatedUser.user_metadata?.name,
+        })
+      } else {
+        posthog.reset()
+      }
     }
-  }, [isSignedIn, user, posthog])
+
+    // initial identify on first page load
+    supabase.auth.getUser().then(({ data: { user: initialUser } }) => {
+      identifySupabaseUser(initialUser)
+
+    })
+
+    // re-identify whenever auth state changes (sign in / sign out)
+    const {
+      data: { subscription: authStateSubscription },
+    } = supabase.auth.onAuthStateChange((_authEvent, currentSession) => {
+      identifySupabaseUser(currentSession?.user ?? null)
+    })
+
+    return () => authStateSubscription.unsubscribe()
+  }, [posthog])
 
   return null
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // the logged user data if there is any
+
+  const user = Route.useLoaderData()
   return (
     <html lang="en" suppressContentEditableWarning className="dark">
       <head>
@@ -81,15 +107,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             ui_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://eu.posthog.com',
             defaults: '2025-05-24',
             capture_exceptions: true,
-            debug: import.meta.env.DEV,
+            debug: false,
           }}
         >
-          {/* Sync Clerk user identity into PostHog on auth state changes */}
+          {/* Sync Supabase user identity into PostHog on auth state changes */}
           <PostHogIdentify />
           <div id="root-layout">
             <header>
               <div className="frame">
-                <Navbar />
+                <Navbar user={user} />
                 <Crosshair />
                 <Crosshair />
               </div>

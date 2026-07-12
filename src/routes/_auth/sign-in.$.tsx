@@ -60,7 +60,7 @@ function RouteComponent() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/api/auth/callback`,
         },
       });
 
@@ -68,8 +68,7 @@ function RouteComponent() {
         throw error;
       }
 
-      // No navigation is needed here.
-      // Supabase redirects the browser to Google automatically.
+
     } catch (error) {
       setIsGoogleLoading(false);
       toast.error(

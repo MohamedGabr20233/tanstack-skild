@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SkillsNewRouteImport } from './routes/skills/new'
+import { Route as ApiAuthCallbackRouteImport } from './routes/api/auth/callback'
 import { Route as AuthSignUpSplatRouteImport } from './routes/_auth/sign-up.$'
 import { Route as AuthSignInSplatRouteImport } from './routes/_auth/sign-in.$'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const SkillsNewRoute = SkillsNewRouteImport.update({
   id: '/skills/new',
   path: '/skills/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthCallbackRoute = ApiAuthCallbackRouteImport.update({
+  id: '/api/auth/callback',
+  path: '/api/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignUpSplatRoute = AuthSignUpSplatRouteImport.update({
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/skills/new': typeof SkillsNewRoute
   '/sign-in/$': typeof AuthSignInSplatRoute
   '/sign-up/$': typeof AuthSignUpSplatRoute
+  '/api/auth/callback': typeof ApiAuthCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/skills/new': typeof SkillsNewRoute
   '/sign-in/$': typeof AuthSignInSplatRoute
   '/sign-up/$': typeof AuthSignUpSplatRoute
+  '/api/auth/callback': typeof ApiAuthCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,21 @@ export interface FileRoutesById {
   '/skills/new': typeof SkillsNewRoute
   '/_auth/sign-in/$': typeof AuthSignInSplatRoute
   '/_auth/sign-up/$': typeof AuthSignUpSplatRoute
+  '/api/auth/callback': typeof ApiAuthCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/skills/new' | '/sign-in/$' | '/sign-up/$'
+  fullPaths:
+    '/' | '/skills/new' | '/sign-in/$' | '/sign-up/$' | '/api/auth/callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/skills/new' | '/sign-in/$' | '/sign-up/$'
-  id: '__root__' | '/' | '/skills/new' | '/_auth/sign-in/$' | '/_auth/sign-up/$'
+  to: '/' | '/skills/new' | '/sign-in/$' | '/sign-up/$' | '/api/auth/callback'
+  id:
+    | '__root__'
+    | '/'
+    | '/skills/new'
+    | '/_auth/sign-in/$'
+    | '/_auth/sign-up/$'
+    | '/api/auth/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +83,7 @@ export interface RootRouteChildren {
   SkillsNewRoute: typeof SkillsNewRoute
   AuthSignInSplatRoute: typeof AuthSignInSplatRoute
   AuthSignUpSplatRoute: typeof AuthSignUpSplatRoute
+  ApiAuthCallbackRoute: typeof ApiAuthCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -83,6 +100,13 @@ declare module '@tanstack/react-router' {
       path: '/skills/new'
       fullPath: '/skills/new'
       preLoaderRoute: typeof SkillsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/callback': {
+      id: '/api/auth/callback'
+      path: '/api/auth/callback'
+      fullPath: '/api/auth/callback'
+      preLoaderRoute: typeof ApiAuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/sign-up/$': {
@@ -107,6 +131,7 @@ const rootRouteChildren: RootRouteChildren = {
   SkillsNewRoute: SkillsNewRoute,
   AuthSignInSplatRoute: AuthSignInSplatRoute,
   AuthSignUpSplatRoute: AuthSignUpSplatRoute,
+  ApiAuthCallbackRoute: ApiAuthCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

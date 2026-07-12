@@ -1,6 +1,6 @@
-import { supabase } from "#/utils/supabase";
 import { createServerFn } from "@tanstack/react-start";
-import { SignInSchema, SignUpSchema } from "./auth.schema";
+import { SignInSchema, SignUpSchema } from "../schema/auth.schema";
+import { getSupabaseServerClient } from "#/utils/supabase.server";
 
 // sign up
 
@@ -8,6 +8,9 @@ export const signup = createServerFn({ method: "POST" })
     .validator(SignUpSchema)
     .handler(async ({ data }) => {
         const { email, password } = data
+
+
+        const supabase = getSupabaseServerClient()
 
         const { data: userData, error } = await supabase.auth.signUp({
             email, password
@@ -33,6 +36,7 @@ export const signup = createServerFn({ method: "POST" })
 export const singIn = createServerFn({ method: "POST" })
     .validator(SignInSchema)
     .handler(async ({ data }) => {
+        const supabase = getSupabaseServerClient()
 
         const { data: authData, error } = await supabase.auth.signInWithPassword({
             email: data.email,
@@ -55,6 +59,8 @@ export const singIn = createServerFn({ method: "POST" })
 export const getCurrentUser = createServerFn({
     method: "GET",
 }).handler(async () => {
+    const supabase = getSupabaseServerClient()
+
     const {
         data: { user },
         error
@@ -78,6 +84,7 @@ export const getCurrentUser = createServerFn({
 export const getCurrentProfile = createServerFn({
     method: "GET"
 }).handler(async () => {
+    const supabase = getSupabaseServerClient()
 
     const { data: { user }, error: userError } = await supabase.auth.getUser()
 
@@ -91,8 +98,9 @@ export const getCurrentProfile = createServerFn({
         .from("profiles")
         .select("*")
         .eq("id", user.id)
-        .single()
+        .maybeSingle()
 
+    console.log(profile)
     if (profileError) {
         throw new Error(profileError.message)
     }
@@ -106,6 +114,8 @@ export const getCurrentProfile = createServerFn({
 
 export const signOut = createServerFn({ method: "POST" })
     .handler(async () => {
+        const supabase = getSupabaseServerClient()
+
         const { error } = await supabase.auth.signOut()
         if (error) {
             throw new Error(error.message);
