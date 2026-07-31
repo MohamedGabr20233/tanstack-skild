@@ -1,16 +1,18 @@
-import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { PostHogProvider, usePostHog } from "@posthog/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-
-import ClerkProvider from "../integrations/clerk/provider";
-
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-
-import appCss from "../styles.css?url";
-
 import type { QueryClient } from "@tanstack/react-query";
-import Navbar from "#/components/Navbar";
+import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { useEffect } from "react";
+import { supabase } from "#/utils/supabase";
 import Crosshair from "#/components/Crosshair";
+import Navbar from "#/components/Navbar";
+import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
+import appCss from "../styles.css?url";
+import { Toaster } from "sonner";
+import { getCurrentProfile, getCurrentUser } from "../../server/auth.api";
+import type { profileSchema } from "../../type";
+
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -42,9 +44,55 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+
+  loader: async () => {
+    const data = await getCurrentProfile()
+
+    return data as profileSchema | null
+  }
 });
 
+function PostHogIdentify() {
+  const posthog = usePostHog()
+
+  useEffect(() => {
+    // identifySupabaseUser: push current auth user identity into PostHog
+    const identifySupabaseUser = (authenticatedUser: import("@supabase/supabase-js").User | null) => {
+      if (authenticatedUser) {
+        posthog.identify(authenticatedUser.id, {
+          email: authenticatedUser.email,
+          name:
+            authenticatedUser.user_metadata?.full_name ??
+            authenticatedUser.user_metadata?.name,
+        })
+      } else {
+        posthog.reset()
+      }
+    }
+
+    // initial identify on first page load
+    supabase.auth.getUser().then(({ data: { user: initialUser } }) => {
+      identifySupabaseUser(initialUser)
+
+    })
+
+    // re-identify whenever auth state changes (sign in / sign out)
+    const {
+      data: { subscription: authStateSubscription },
+    } = supabase.auth.onAuthStateChange((_authEvent, currentSession) => {
+      identifySupabaseUser(currentSession?.user ?? null)
+    })
+
+    return () => authStateSubscription.unsubscribe()
+  }, [posthog])
+
+  return null
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // the logged user data if there is any
+
+  const user = Route.useLoaderData()
   return (
     <html lang="en" suppressContentEditableWarning className="dark">
       <head>
@@ -52,11 +100,22 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
 
       <body>
-        <ClerkProvider>
+        <PostHogProvider
+          apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN ?? ""}
+          options={{
+            api_host: '/ingest',
+            ui_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://eu.posthog.com',
+            defaults: '2025-05-24',
+            capture_exceptions: true,
+            debug: false,
+          }}
+        >
+          {/* Sync Supabase user identity into PostHog on auth state changes */}
+          <PostHogIdentify />
           <div id="root-layout">
             <header>
               <div className="frame">
-                <Navbar />
+                <Navbar user={user} />
                 <Crosshair />
                 <Crosshair />
               </div>
@@ -66,21 +125,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               <div className="frame">{children}</div>
             </main>
           </div>
+        </PostHogProvider>
 
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              TanStackQueryDevtools,
-            ]}
-          />
-        </ClerkProvider>
+        <TanStackDevtools
+          config={{
+            position: "bottom-right",
+          }}
+          plugins={[
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
         <Scripts />
+
+        <Toaster />
       </body>
     </html>
   );
