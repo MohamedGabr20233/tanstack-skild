@@ -13,12 +13,20 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check"
+    "check": "biome check",
+    "firebase-deploy": "npx -y firebase-tools@latest deploy --only dataconnect"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.3",
+    "@clerk/tanstack-react-start": "^1.4.11",
+    "@gsap/react": "^2.1.2",
+    "@hookform/resolvers": "^5.4.0",
+    "@posthog/react": "^1.10.3",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.110.2",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
+    "@tanstack/react-form": "^1.33.0",
     "@tanstack/react-query": "latest",
     "@tanstack/react-query-devtools": "latest",
     "@tanstack/react-router": "latest",
@@ -28,12 +36,20 @@
     "@tanstack/router-plugin": "^1.132.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "firebase": "^12.15.0",
+    "firebase-sdk": "^0.0.0",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.577.0",
+    "posthog-node": "^5.39.2",
+    "radix-ui": "^1.6.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hook-form": "^7.80.0",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.1.18",
-    "tw-animate-css": "^1.3.6"
+    "tw-animate-css": "^1.3.6",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",

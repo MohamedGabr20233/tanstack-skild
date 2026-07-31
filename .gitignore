@@ -11,3 +11,12 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+.env.local
+
+
+.firebase
+dataconnect/.dataconnect
+.dataconnect/connectors
+*.log
+.firebase/
+src/dataconnect-generated/
