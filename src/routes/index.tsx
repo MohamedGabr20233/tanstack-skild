@@ -1,44 +1,49 @@
 import { usePostHog } from "@posthog/react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Terminal } from "lucide-react";
+import { createFileRoute, Link, type ErrorComponentProps } from "@tanstack/react-router";
+import { LogIn, Terminal } from "lucide-react";
 import SkillCard from "../components/SkillCard";
-import { createServerFn } from "@tanstack/react-start";
-import { getCurrentProfile } from "../../server/auth.api";
+import NoResults from "../components/NoResults";
+import { useAuth } from "#/hooks/useAuth";
+import { getSkills } from "../../server/skill.api";
 
-const getSkillsFn = createServerFn({ method: "GET" })
-  .handler(async () => {
-    try {
-      // * {destructedVariable} = await QueryFn(DataConnector , {param1 : value1 , param2 : value2})"})
-      // const { data } = await getSkills(dataConnect, {
-      //   searchTerm: "",
-      //   limit: 10,
-      // })
 
-      return true
-    } catch (e) {
-      console.log(e)
-      return []
-    }
-  })
 export const Route = createFileRoute("/")({
   component: HomePage,
+  errorComponent: HomePageError,
   loader: async () => {
-    // save promise
+    const result = await getSkills()
 
-    const saveGetSkills = getSkillsFn().catch(false)
-    const resolve = Promise.all([getCurrentProfile(), saveGetSkills])
+    if (!result.success) {
+      throw new Error(result.message)
+    }
 
-    return resolve
-  }
+    return result.data
+  },
 });
 
 
+function HomePageError({ error, reset }: ErrorComponentProps) {
+  return (
+    <div id="home">
+      <NoResults
+        title="Couldn't load skills"
+        message={error.message || "Something went wrong while fetching the registry."}
+      />
+      <div className="mt-4 flex justify-center">
+        <button type="button" onClick={reset} className="btn-secondary">
+          Try again
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function HomePage() {
   const posthog = usePostHog();
 
-  // const skills = Route.useLoaderData();
+  const skills = Route.useLoaderData();
 
+  const { isAuthed } = useAuth()
 
   return (
     <div id="home">
@@ -53,36 +58,44 @@ function HomePage() {
         </div>
 
         <div className="actions">
-          <Link to="/" className="btn-primary" onClick={() => posthog.capture("browse_registry_clicked")}>
+          <Link to="/skills" search={{ q: "", page: 1 }} className="btn-primary" onClick={() => posthog.capture("browse_registry_clicked")}>
             <Terminal size={18} />
             <span>Browse Registry</span>
           </Link>
-          <Link to="/" className="btn-secondary" onClick={() => posthog.capture("publish_skill_clicked")}>
-            <span>publish skill</span>
-          </Link>
+          {!isAuthed ?
+            /* show if the user isn't authed */
+            <Link to="/sign-in/$" className="btn-secondary">
+              <LogIn size={16} />
+              Sign in to publish a skill
+            </Link>
+            :
+            <Link to="/skills/new" className="btn-secondary" onClick={() => posthog.capture("publish_skill_clicked")}>
+              <span>publish skill</span>
+            </Link>
+          }
         </div>
       </section >
 
       <section className="latest">
         <div className="space-y-2">
           <h2>
-            Recently Created <span className="text-gradient">Skills</span>
+            Top Voted <span className="text-gradient">Skills</span>
           </h2>
-          <p>Latest skills loaded from Firestone in descending creation order.</p>
+          <p>The most upvoted skills in the registry, newest first on ties.</p>
         </div>
 
-        {/* the carts */}
-        {/* <div>
-          {skills.length > 0 ? (
-            <div className="skills-grid">
-              {skills.map((skill) => (
-                <SkillCard skill={skill} key={skill.id} />
-              ))}
-            </div>
-          ) : (
-            <p>No skills have been created yet</p>
-          )}
-        </div> */}
+        {skills.length > 0 ? (
+          <div className="skills-grid">
+            {skills.map((skill) => (
+              <SkillCard skill={skill} key={skill.id} />
+            ))}
+          </div>
+        ) : (
+          <NoResults
+            title="No skills yet"
+            message="Be the first to publish a skill to the registry."
+          />
+        )}
       </section>
     </div >
   );

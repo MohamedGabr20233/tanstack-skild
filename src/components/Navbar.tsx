@@ -109,6 +109,7 @@ const Navbar = ({ user }: NavbarProps) => {
                   src={user.avatar_url}
                   alt={user.full_name}
                   className="h-full w-full object-cover"
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <span>{avatarFallbackLetter}</span>
@@ -129,6 +130,7 @@ const Navbar = ({ user }: NavbarProps) => {
                       src={user.avatar_url}
                       alt={user.full_name}
                       className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
                     />
                   ) : (
                     <span>{avatarFallbackLetter}</span>

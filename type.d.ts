@@ -7,10 +7,17 @@ export interface SkillRecord {
   description: string;
   category: string;
   tags: string[];
-  installCommand: string;
-  createdAt: string | null;
-  authorClerkId: string | null;
-  authorEmail: string | null;
+  install_command: string;
+  prompt_config: string;
+  usage_example: string;
+  created_at: string | null;
+  author_id: string;
+  author_email: string | null;
+  author_image: string | null;
+  installs_count: number;
+  votes_count: number;
+  /** whether the current viewer has upvoted — false for signed-out visitors */
+  hasVoted?: boolean;
 }
 
 export interface profileSchema {
