@@ -17,8 +17,6 @@
     "firebase-deploy": "npx -y firebase-tools@latest deploy --only dataconnect"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.61.3",
-    "@clerk/tanstack-react-start": "^1.4.11",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.4.0",
     "@posthog/react": "^1.10.3",

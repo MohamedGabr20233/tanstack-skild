@@ -50,50 +50,47 @@ npm run check
 ```
 
 
-## Setting up Clerk
+## Setting up Supabase
 
-1. Sign up at [clerk.com](https://clerk.com) and create an application
-2. Copy the **Publishable Key** from the Clerk dashboard
-3. Set it in your `.env.local`:
+1. Create a project at [supabase.com](https://supabase.com)
+2. Copy the **Project URL** and the **anon/publishable key** from Project Settings → API
+3. Set them in your `.env.local`:
    ```bash
-   VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+   VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+   VITE_SUPABASE_KEY=<anon key>
    ```
-4. Visit the demo route at `/demo/clerk` once `npm run dev` is running
+
+Use the anon key, never the service role key — these are exposed to the browser.
 
 ### What's wired up
 
-- **`<ClerkProvider>`** at the app root (`src/integrations/clerk/provider.tsx`) handles auth context for the whole tree
-- **`<SignInButton>` / `<UserButton>`** in the header swap based on auth state
-- **`/demo/clerk`** shows Clerk's prebuilt sign-in UI and a signed-in greeting
+- **Email/password and Google OAuth** sign-in, with the OAuth code exchange handled at
+  `/api/auth/callback`
+- **Cookie-based sessions** via `@supabase/ssr`, shared between server render and client
+- **Row Level Security** policies enforce per-user vote and install constraints in the database
 
 ### Protecting a route
 
-Wrap any component in `<SignedIn>` / `<SignedOut>`:
+Guard in `beforeLoad` so the check runs on both server render and client-side navigation:
 
 ```tsx
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
-
-function ProtectedPage() {
-  return (
-    <>
-      <SignedIn>
-        <YourPageContent />
-      </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </>
-  )
-}
+export const Route = createFileRoute('/skills/new')({
+  beforeLoad: async () => {
+    const user = await getCurrentUser()
+    if (!user) throw redirect({ to: '/sign-in/$', params: { _splat: '' } })
+    return { user }
+  },
+})
 ```
 
-For server-side checks (route loaders, server functions), see the Clerk docs on [`auth()`](https://clerk.com/docs/references/backend/auth).
+Server-only middleware is not enough on its own — it never runs during a client-side
+navigation.
 
 ### Production checklist
 
-- Replace the test keys with **production keys** from a dedicated production Clerk instance
-- Configure your production domain under **Domains** in the Clerk dashboard
-- Set up social providers (Google, GitHub, etc.) under **User & Authentication → Social Connections**
+- Add your deployed domain as the **Site URL** under Authentication → URL Configuration
+- Add `https://<your-domain>/api/auth/callback` to the allowed **Redirect URLs**
+- Enable and configure Google under Authentication → Providers
 
 
 ## Shadcn

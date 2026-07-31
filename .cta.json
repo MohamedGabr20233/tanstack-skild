@@ -6,9 +6,7 @@
   "includeExamples": false,
   "tailwind": true,
   "addOnOptions": {},
-  "envVarValues": {
-    "VITE_CLERK_PUBLISHABLE_KEY": "pk_test_ZGVzaXJlZC1kdWNrLTg0LmNsZXJrLmFjY291bnRzLmRldiQ"
-  },
+  "envVarValues": {},
   "git": true,
   "install": true,
   "routerOnly": false,
@@ -16,7 +14,6 @@
   "framework": "react",
   "chosenAddOns": [
     "biome",
-    "clerk",
     "compiler",
     "shadcn",
     "tanstack-query"
