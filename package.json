@@ -38,6 +38,7 @@
     "firebase-sdk": "^0.0.0",
     "gsap": "^3.15.0",
     "lucide-react": "^0.577.0",
+    "nitro": "^3.0.260610-beta",
     "posthog-node": "^5.39.2",
     "radix-ui": "^1.6.1",
     "react": "^19.2.0",

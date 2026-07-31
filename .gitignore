@@ -19,4 +19,4 @@ dataconnect/.dataconnect
 .dataconnect/connectors
 *.log
 .firebase/
-src/dataconnect-generated/
+src/dataconnect-generated/.vercel
